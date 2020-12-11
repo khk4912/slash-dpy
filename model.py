@@ -1,12 +1,11 @@
 import inspect
-from typing import Optional, OrderedDict, Union
 from dataclasses import dataclass
-from discord.user import User
+from typing import Optional, OrderedDict
 
 from discord.ext.commands.core import Command
 from discord.member import Member
 from discord.role import Role
-
+from discord.user import User
 
 SUB_COMMAND = 1
 SUB_COMMAND_GROUP = 2

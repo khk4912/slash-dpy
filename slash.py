@@ -1,7 +1,5 @@
-from functools import wraps
 from typing import Dict, List, Optional, Union
 
-import discord
 import requests
 from discord.ext import commands
 from discord.ext.commands.core import Command
