@@ -105,7 +105,7 @@ class InteractionContext:
         }
 
         if private:
-            data["flags"] = 1 << 6
+            data["data"]["flags"] = 64
 
         url = f"https://discord.com/api/v8/interactions/{self.id}/{self.token}/callback"
         headers = {"Authorization": f"Bot {self.token}"}
