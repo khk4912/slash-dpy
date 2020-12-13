@@ -1,14 +1,14 @@
-from exceptions import InvaildArgument
 import inspect
 from dataclasses import dataclass
 from typing import Callable, Optional, OrderedDict
 
+import aiohttp
 import discord
 from discord.member import Member
 from discord.role import Role
 from discord.user import User
 
-import aiohttp
+from exceptions import InvaildArgument
 
 SUB_COMMAND = 1
 SUB_COMMAND_GROUP = 2
@@ -22,6 +22,21 @@ ROLE = 8
 
 @dataclass
 class SlashCommand:
+    """
+    Model of SlashCommand.
+
+    Attributes
+    ----------
+    name : str
+        Name of SlashCommand
+    description : str
+        Description of SlashCommand
+    options: OrdeeredDict[str, inspect.Parameter]
+        Options created based on parameter's annotations.
+    func : Callable
+        Function covered with slash decorator.
+    """
+
     name: str
     description: Optional[str]
     options: OrderedDict[str, inspect.Parameter]
@@ -76,8 +91,23 @@ class SlashCommand:
 
 @dataclass
 class InteractionContext:
-    author: User
-    options: Optional[dict]
+    """
+    Model of InteractionContext
+
+    Attributes
+    ----------
+    author : discord.User, optional
+        Message's author.
+    options : list, optional
+        List of options.
+    id : int
+        ID of interaction.
+    token : str
+        Token of interaction.
+    """
+
+    author: Optional[User]
+    options: Optional[list]
     id: int
     token: str
 
@@ -88,6 +118,21 @@ class InteractionContext:
         private: bool = False,
         tts: bool = False,
     ):
+        """
+        Function that calllback to interaction.
+
+        Parameters
+        ----------
+        content : str, optional
+            Content of message.
+        embed : discord.Embed, optional
+            Embed.
+        private : bool,
+            Whether to send a message that is visible only to the sender.
+            Default is False.
+        tts : bool
+            Whether to send TTS message. Default is False.
+        """
         embeds = []
         if content is None and embed is None:
             raise InvaildArgument("Both content and embeds are None.")

@@ -1,10 +1,8 @@
 import inspect
-from typing import Callable, Dict, List, Optional, OrderedDict, Union
+from typing import Callable, Dict, Optional, OrderedDict, Union
 
-import aiohttp
 import requests
 from discord.ext import commands
-from discord.ext.commands.core import Command
 
 from model import InteractionContext, SlashCommand
 
@@ -17,6 +15,22 @@ class Slash:
         token: str,
         guild_id: Optional[int] = None,
     ) -> None:
+        """
+        Class for Slash commands.
+
+        Attributes
+        ----------
+        bot : Union[commands.Bot, commands.AutoShardedBot]
+            discord.py's Bot Class.
+        client_id : int
+            Client ID of application.
+        toekn : str
+            Token of bot.
+        guild_id : int, optional
+            Guild's ID. If an ID is given, register the slash command only in the
+            guild of that ID.
+
+        """
         self.bot = bot
         self.client_id = client_id
         self.__token = token
@@ -27,6 +41,17 @@ class Slash:
 
     # decorator
     def slash(self, name: str, description: str):
+        """
+        Decorator for making slash command.
+
+        Parameters
+        ----------
+        name : str
+            Name of slash command.
+        description : str
+            Description of slash command.
+        """
+
         def wrapper(func):
             slash_command = self._parse_command_info(
                 name=name, description=description, func=func
@@ -76,8 +101,6 @@ class Slash:
             token = data["token"]
             int_id = data["id"]
 
-            url = f"https://discord.com/api/v8/interactions/{data['id']}/{data['token']}/callback"
-
             await self._commands[name].func(
                 InteractionContext(
                     author=self.bot.get_user(raw_user),
@@ -86,11 +109,3 @@ class Slash:
                     token=token,
                 ),
             )
-            # async with aiohttp.ClientSession() as session:
-            #     async with session.post(
-            #         url,
-            #         json=response,
-            #         headers={"Authorization": f"Bot {self.__token}"},
-            #     ) as resp:
-            #         print(resp.status)
-            #         print(await resp.text())

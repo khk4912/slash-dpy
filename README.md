@@ -1,4 +1,4 @@
-## Example
+# Example
 
 ```py
 from slash import Slash
@@ -23,4 +23,5 @@ async def wow(interact: InteractionContext):
 
 bot.run(BOT_TOKEN)
 ```
+
 ![6uFpCde6V9](https://user-images.githubusercontent.com/30457148/102010648-c4b26300-3d82-11eb-8a55-66b8a107677c.gif)

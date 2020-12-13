@@ -1,7 +1,7 @@
-from slash import Slash
-from model import InteractionContext
 from discord.ext import commands
 
+from model import InteractionContext
+from slash import Slash
 
 bot = commands.Bot(command_prefix="/")
 slash = Slash(
