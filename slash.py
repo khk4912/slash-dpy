@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Union
-
+import aiohttp
 import requests
 from discord.ext import commands
 from discord.ext.commands.core import Command
@@ -13,7 +13,6 @@ class Slash:
         bot: Union[commands.Bot, commands.AutoShardedBot],
         client_id: int,
         token: str,
-        ignore_commands: List[str] = [],
         guild_id: Optional[int] = None,
     ) -> None:
         self.bot = bot
@@ -21,18 +20,7 @@ class Slash:
         self.__token = token
         self.guild_id = guild_id
 
-        self.ignore_commands = ignore_commands
-        self._commands: Dict[str, SlashCommand] = {}
-
-        for i in self.bot.walk_commands():
-            if not isinstance(i, Command):
-                continue
-
-            if i.qualified_name not in ignore_commands:
-                self._commands[i.name] = self._parse_command_info(i)
-
-        self._post()
-        self.bot.add_listener(self.on_socket_response, "on_socket_response")
+        self._commands = {}
 
     def _parse_command_info(self, command: Command) -> SlashCommand:
         return SlashCommand(
@@ -57,7 +45,23 @@ class Slash:
                 json=i.to_dict(),
             )
 
+    def slash(self, f):
+        def decorator(*args, **kwargs):
+            return f(*args, **kwargs)
+
+        return decorator
+
     async def on_socket_response(self, msg: dict) -> None:
         if msg["t"] == "INTERACTION_CREATE":
-            name = msg["d"]["data"]["name"]
-            pass
+            data = msg["d"]
+            name = data["data"]["name"]
+            url = f"https://discord.com/api/v8/interactions/{data['id']}/{data['token']}/callback"
+
+            # async with aiohttp.ClientSession() as session:
+            #     async with session.post(
+            #         url,
+            #         json=response,
+            #         headers={"Authorization": f"Bot {self.__token}"},
+            #     ) as resp:
+            #         print(resp.status)
+            #         print(await resp.text())
