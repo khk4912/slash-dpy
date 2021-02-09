@@ -50,7 +50,7 @@ class SlashCommand:
         data["name"] = self.name
         data["description"] = self.description or f"Command {self.name}"
 
-        option_type = None
+        option_type = STRING  # Default
         required = True
 
         for name, param in self.options.items():
@@ -127,7 +127,7 @@ class InteractionContext:
             Content of message.
         embed : discord.Embed, optional
             Embed.
-        private : bool,
+        private : bool
             Whether to send a message that is visible only to the sender.
             Default is False.
         tts : bool
